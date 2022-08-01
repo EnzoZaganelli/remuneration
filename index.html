@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calcul remboursement solde</title>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        main {
+            background-color: whitesmoke;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding-left: 4em;
+            padding-right: 4em;
+            border: 1px solid black;
+            border-radius: 30px;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+        }
+
+        button,
+        input[type="submit"] {
+            padding: 0.5em;
+            margin: 1em;
+            margin: 1em;
+            appearance: none;
+            background-color: #FAFBFC;
+            border: 2px solid black;
+            border-radius: 6px;
+            box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+            box-sizing: border-box;
+            color: #24292E;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 1.2em;
+            font-weight: 500;
+            line-height: 20px;
+            list-style: none;
+            position: relative;
+            transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            vertical-align: middle;
+            white-space: nowrap;
+            word-wrap: break-word;
+        }
+
+        main,
+        button,
+        input[type="button"],
+        input[type="number"] {
+            font-size: 1.2rem;
+        }
+
+        #control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        img {
+            width: 2em;
+            margin: 1em;
+        }
+
+        #result {
+            border: 3px red solid;
+            font-size: 1.5em;
+        }
+
+        .red {
+            color: red;
+        }
+
+        details {
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            padding: .5em .5em 0;
+        }
+
+        summary {
+            font-weight: bold;
+            margin: -.5em -.5em 0;
+            padding: .5em;
+        }
+
+        details[open] {
+            padding: .5em;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div id="presentation">
+            <h3>ESTIMATION DU MONTANT CORRESPONDANT AU REMBOURSEMENT D’UNE FORMATION EN CAS DE RUPTURE DE LIEN AU
+                SERVICE</h3>
+            <p>Le bureau de la rémunération et des pensions militaires a publié un feuillet d’information qui vous
+                permettra de renseigner les données du calculateur. N’hésitez pas à le consulter en cliquant <a
+                    href="http://masolde.gendarmerie.fr/breve/216-feuillet-ndeg11-rupture-du-lien-au-service-calcul-du-remboursement-dune-formation">ici</a>.
+            </p>
+        </div>
+        <div id="control">
+            <div id="choice">
+                <p>Vous êtes :</p> <button id="choiceSOG">un sous officier</button> <button id="choiceOG">un
+                    officier</button>
+            </div>
+            <div id="reset">
+                <a href="#" onclick="location.reload()"><img title="Retour en arrière" src="asset/svg/reset.svg"
+                        alt="Recommencer" id=resetImg /></a>
+            </div>
+        </div>
+        <div id="input">
+            <div id="SOG">
+                <form action="" method="post" id="formInput">
+                    <fieldset>
+                        <label for="DL">Période totale d'engagement à servir (en mois) :</label>
+                        <input type="number" id="DL" name="DL" required>
+                        <br>
+                        <label for="DFP">Date de fin de formation :</label>
+                        <input type="date" id="DFP" name="DFP">
+                        <br>
+                        <label for="DOP">Date d’obtention du diplôme :</label>
+                        <input type="date" id="DOP" name="DOP">
+                        <br>
+                        <label for="DRESOG">Date de la radiation envisagée (<span
+                                class="red">Obligatoire</span>):</label>
+                        <input type="date" id="DRESOG" name="DRESOG" required>
+                        <br>
+                        <label for="DE">Nombre de mois accomplis :</label>
+                        <input type="number" id="DE" name="DE" readonly required>
+                        <br>
+                    </fieldset>
+                    <fieldset>
+                        <label for="S">Total des rémunérations perçues au cours de la formation (en €):</label>
+                        <input type="number" id="sSOG" name="sSOG" required>
+                        <br>
+                        <label for="C">Coefficient multiplicateur applicable à la formation spécialisée (cf. <a
+                                href="https://www.legifrance.gouv.fr/loda/id/JORFTEXT000043984878?init=true&page=1&query=dur%C3%A9e+du+lien+au+service&searchField=ALL&tab_selection=all">arrêté</a>
+                            en vigueur):</label>
+                        <input type="number" id="cSOG" name="cSOG" required>
+                        <br>
+                    </fieldset>
+                    <input type="submit" id="submitSOG" name="submitSOG" value="Calculer le montant">
+                </form>
+            </div>
+            <div id="OG">
+                <form action="" method="post" id="formInput">
+                    <fieldset>
+                        <label for="OSO">Date d’obtention du statut d’officier de carrière :</label>
+                        <input type="date" id="OSO" name="OSO" required>
+                        <br>
+                        <label for="DREOG">Date de radiation souhaitée : </label>
+                        <input type="date" id="DREOG" name="DREOG" required>
+                        <br>
+                        <label for="TSE">Temps passé au service de l’État après la nomination au premier grade
+                            d’officier (en année):</label>
+                        <input type="number" id="TSE" name="TSE" readonly required>
+                        <br>
+                        <label for="C">Taux de remboursement en % selon la durée d'engagement d'officier et le temps
+                            passé au service de l’Etat (cf. <a
+                                href="https://www.legifrance.gouv.fr/loda/id/JORFTEXT000019477192?init=true&page=1&query=%C3%A9coles+militaires+d%27%C3%A9l%C3%A8ves+officiers+de+carri%C3%A8re&searchField=ALL&tab_selection=all">décret</a>
+                            en vigueur)(en %):</label>
+                        <input type="number" id="cOG" name="cOG">
+                        <br>
+                        <label for="S">Total des rémunérations perçues au cours de la formation (en €):</label>
+                        <input type="number" id="sOG" name="sOG">
+                        <br>
+                    </fieldset>
+                    <input type="submit" id="submitOG" name="submitOG" value="Calculer le montant">
+                </form>
+            </div>
+        </div>
+        <div id="output">
+            <p id="result"></p>
+            <p><span class="red">ATTENTION, le résultat obtenu n'est qu'une simulation.</span>
+                Pour plus d’informations sur les modalités relatives à l’obligation de remboursement d’une formation
+                spécialisée, consulter la fiche GPRH n°5.2.1.8 disponible via Astrée.
+            </p>
+        </div>
+    </main>
+</body>
+<script src="scriptRemuneration.js"></script>
+
+</html>
